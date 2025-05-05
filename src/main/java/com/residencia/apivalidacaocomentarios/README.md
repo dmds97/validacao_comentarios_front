@@ -5,7 +5,7 @@
 ```markdown
 # 🗨️ Comentários API
 
-Uma API RESTful simples construída com **Spring Boot** para cadastrar e listar comentários. Esta API será integrada com um **agente de inteligência artificial** que verificará se os comentários são apropriados antes de serem publicados.
+Uma API RESTful simples construída ccom **Spring Boot** para cadastrar e listar comentários. Esta API será integrada com um **agente de inteligência artificial** que verificará se os comentários são apropriados antes de serem publicados.
 
 ---
 
