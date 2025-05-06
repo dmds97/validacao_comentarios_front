@@ -11,10 +11,21 @@ Uma API RESTful desenvolvida com **Spring Boot** para cadastro e listagem de com
 * Spring Boot
 * Spring Web
 * Spring Data JPA
-* Spring Security (em desenvolvimento)
-* H2 Database
+* **PostgreSQL** (produção)
+* **H2 Database** (testes)
 * Maven
 * Swagger (documentação da API)
+
+---
+
+## 🗃️ Banco de Dados
+
+O projeto utiliza dois bancos de dados conforme o ambiente:
+
+* **Produção:** PostgreSQL
+* **Testes/Desenvolvimento local:** H2 em memória
+
+A configuração dos perfis pode ser feita nos arquivos `application-prod.properties` e `application-test.properties`.
 
 ---
 
@@ -88,17 +99,21 @@ A integração será implementada no `ComentarioService`, utilizando serviços e
    cd comentarios-api
    ```
 
-3. **Execute a aplicação com Maven**:
+3. **Execute a aplicação com Maven (modo dev/teste com H2):**
 
    ```bash
-   ./mvnw spring-boot:run
+   ./mvnw spring-boot:run -Dspring-boot.run.profiles=test
    ```
 
-4. **Acesse o console do banco H2 (opcional)**:
+4. **Para rodar em produção (com PostgreSQL):**
 
-   ```
-   URL: http://localhost:8080/h2-console
-   JDBC URL: jdbc:h2:mem:comentariosdb
+   Certifique-se de configurar corretamente o `application-prod.properties` com as credenciais do banco:
+
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/comentarios
+   spring.datasource.username=seu_usuario
+   spring.datasource.password=sua_senha
+   spring.profiles.active=prod
    ```
 
 ---
