@@ -1,7 +1,7 @@
 package com.residencia.apivalidacaocomentarios.controller;
 
-import com.residencia.apivalidacaocomentarios.dto.ComentarioDTO;
-import com.residencia.apivalidacaocomentarios.model.Comentario;
+import com.residencia.apivalidacaocomentarios.dto.request.ComentarioRequestDTO;
+import com.residencia.apivalidacaocomentarios.dto.response.ComentarioResponseDTO;
 import com.residencia.apivalidacaocomentarios.service.ComentarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -16,40 +16,40 @@ import java.util.List;
 @Tag(name = "Comentario", description = "Gerenciamento de comentários")
 public class ComentarioController {
 
-    private final ComentarioService service;
+    private final ComentarioService comentarioService;
 
-    public ComentarioController(ComentarioService service) {
-        this.service = service;
+    public ComentarioController(ComentarioService comentarioService) {
+        this.comentarioService = comentarioService;
     }
 
     @PostMapping
-    public ResponseEntity<Comentario> criar(@RequestBody @Valid ComentarioDTO dto) {
-        Comentario criado = service.criarComentario(dto);
-        URI location = URI.create("/comentarios/" + criado.getId());
-        return ResponseEntity.created(location).body(criado);
+    public ResponseEntity<ComentarioResponseDTO> criarComentario(@RequestBody @Valid ComentarioRequestDTO dto) {
+        ComentarioResponseDTO comentarioSalvo = comentarioService.salvarComentario(dto);
+        return ResponseEntity.created(URI.create("/comentarios/" + comentarioSalvo.id())).body(comentarioSalvo);
     }
 
     @GetMapping
-    public ResponseEntity<List<Comentario>> listar() {
-        return ResponseEntity.ok(service.listarComentarios());
+    public ResponseEntity<List<ComentarioResponseDTO>> listar() {
+        return ResponseEntity.ok(comentarioService.listarComentarios());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Comentario> buscarPorId(@PathVariable Long id) {
-        Comentario comentario = service.buscarPorId(id);
+    public ResponseEntity<ComentarioResponseDTO> buscarPorId(@PathVariable Long id) {
+        ComentarioResponseDTO comentario = comentarioService.buscarPorId(id);
         return ResponseEntity.ok(comentario);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Comentario> atualizar(@PathVariable Long id, @RequestBody @Valid ComentarioDTO dto) {
-        Comentario atualizado = service.atualizarComentario(id, dto);
+    public ResponseEntity<ComentarioResponseDTO> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid ComentarioRequestDTO dto) {
+        ComentarioResponseDTO atualizado = comentarioService.atualizarComentario(id, dto);
         return ResponseEntity.ok(atualizado);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.deletarComentario(id);
+        comentarioService.deletarComentario(id);
         return ResponseEntity.noContent().build();
     }
 }
-

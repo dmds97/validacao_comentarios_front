@@ -1,68 +1,80 @@
 package com.residencia.apivalidacaocomentarios.service;
 
-import com.residencia.apivalidacaocomentarios.dto.ComentarioDTO;
+import com.residencia.apivalidacaocomentarios.dto.request.ComentarioRequestDTO;
+import com.residencia.apivalidacaocomentarios.dto.response.ComentarioResponseDTO;
 import com.residencia.apivalidacaocomentarios.exception.ComentarioNotFoundException;
 import com.residencia.apivalidacaocomentarios.model.Comentario;
+import com.residencia.apivalidacaocomentarios.model.Usuario;
 import com.residencia.apivalidacaocomentarios.repository.ComentarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ComentarioService {
 
-    private final ComentarioRepository repository;
+    private final ComentarioRepository comentarioRepository;
+    private final UsuarioService usuarioService;
 
-    public ComentarioService(ComentarioRepository repository) {
-        this.repository = repository;
+    public ComentarioService(ComentarioRepository comentarioRepository, UsuarioService usuarioService) {
+        this.comentarioRepository = comentarioRepository;
+        this.usuarioService = usuarioService;
     }
 
     @Transactional
-    public Comentario criarComentario(ComentarioDTO dto) {
-        validarDTO(dto);
+    public ComentarioResponseDTO salvarComentario(ComentarioRequestDTO dto) {
+        Usuario usuario = usuarioService.buscarOuCriarUsuario(dto.nomeUsuario());
 
-        Comentario comentario = fromDTO(dto);
-        return repository.save(comentario);
+        Comentario comentario = new Comentario();
+        comentario.setComentario(dto.comentario());
+        comentario.setUsuario(usuario);
+        comentarioRepository.save(comentario);
+
+        return toResponseDTO(comentario);
     }
 
     @Transactional(readOnly = true)
-    public List<Comentario> listarComentarios() {
-        return repository.findAll();
+    public List<ComentarioResponseDTO> listarComentarios() {
+        return comentarioRepository.findAll().stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public Comentario buscarPorId(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ComentarioNotFoundException(id));
+    public ComentarioResponseDTO buscarPorId(Long id) {
+        Comentario comentario = comentarioRepository.findById(id)
+                .orElseThrow(() -> new ComentarioNotFoundException("Comentário com ID " + id + " não encontrado."));
+        return toResponseDTO(comentario);
     }
 
     @Transactional
-    public Comentario atualizarComentario(Long id, ComentarioDTO dto) {
-        validarDTO(dto);
+    public ComentarioResponseDTO atualizarComentario(Long id, ComentarioRequestDTO dto) {
+        Comentario comentario = comentarioRepository.findById(id)
+                .orElseThrow(() -> new ComentarioNotFoundException("Comentário com ID " + id + " não encontrado."));
 
-        Comentario existente = buscarPorId(id);
-        existente.setTexto(dto.texto());
+        Usuario usuario = usuarioService.buscarOuCriarUsuario(dto.nomeUsuario());
 
-        return repository.save(existente);
+        comentario.setComentario(dto.comentario());
+        comentario.setUsuario(usuario);
+
+        return toResponseDTO(comentario);
     }
 
     @Transactional
     public void deletarComentario(Long id) {
-        Comentario existente = buscarPorId(id);
-        repository.delete(existente);
+        Comentario comentario = comentarioRepository.findById(id)
+                .orElseThrow(() -> new ComentarioNotFoundException("Comentário com ID " + id + " não encontrado."));
+        comentarioRepository.delete(comentario);
     }
 
-    private void validarDTO(ComentarioDTO dto) {
-        if (dto.texto() == null || dto.texto().isBlank()) {
-            throw new IllegalArgumentException("Texto do comentário não pode ser vazio");
-        }
-    }
-
-    private Comentario fromDTO(ComentarioDTO dto) {
-        Comentario comentario = new Comentario();
-        comentario.setTexto(dto.texto());
-        return comentario;
+    private ComentarioResponseDTO toResponseDTO(Comentario comentario) {
+        return new ComentarioResponseDTO(
+                comentario.getId(),
+                comentario.getComentario(),
+                comentario.getUsuario().getNomeUsuario(),
+                comentario.getCriadoEm()
+        );
     }
 }
-

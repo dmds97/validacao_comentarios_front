@@ -4,4 +4,8 @@ public class ComentarioNotFoundException extends RuntimeException {
     public ComentarioNotFoundException(Long id) {
         super("Comentário não encontrado com o id: " + id);
     }
+
+    public ComentarioNotFoundException(String mensagem) {
+        super(mensagem);
+    }
 }

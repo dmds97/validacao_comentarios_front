@@ -2,6 +2,7 @@ package com.residencia.apivalidacaocomentarios.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -15,9 +16,14 @@ public class Comentario {
     private Long id;
 
     @Schema(example = "Bom dia amigos", requiredMode = Schema.RequiredMode.REQUIRED, description = "Conteúdo do comentário")
-    private String texto;
+    @NotBlank
+    private String comentario;
 
     private LocalDateTime criadoEm;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
     @PrePersist
     public void prePersist() {
