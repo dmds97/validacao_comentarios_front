@@ -1,0 +1,36 @@
+
+services:
+  db:
+    image: postgres:17
+    container_name: postgres_api
+    environment:
+      POSTGRES_DB: comentarios
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Gusta0106
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  app:
+    build: .
+    container_name: springboot_api
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/comentarios
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Gusta0106
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
