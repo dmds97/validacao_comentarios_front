@@ -2,26 +2,217 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Comentários</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>Página de Login</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #dbeafe, #bfdbfe);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 360px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #1e3a8a;
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: -10px;
+            margin-bottom: 12px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 4px;
+            margin-bottom: 12px;
+            display: none; /* <--- Escondido por padrão */
+        }
+
+
+        .btn-login {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-login:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-forgot {
+            background-color: #60a5fa;
+            color: white;
+        }
+
+        .btn-forgot:hover {
+            background-color: #3b82f6;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .forgot-password a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
 </head>
 <body>
 <main>
-    <h1>Comentários da Comunidade</h1>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="form-login">
+            <label for="usuario">Usuário:</label>
+            <input type="text" id="usuario" name="usuario" />
+            <div class="error-message" id="erro-usuario">O usuário deve ter pelo menos 3 caracteres.</div>
 
-    <form id="comentarioForm">
-        <input type="text" id="nome" placeholder="Seu nome" required>
-        <textarea id="texto" placeholder="Digite seu comentário" required></textarea>
-        <button type="submit">Enviar Comentário</button>
-    </form>
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" />
+            <div class="error-message" id="erro-senha">A senha deve ter pelo menos 6 caracteres.</div>
 
-    <section id="comentariosList">
-        <h2>Comentários Recentes</h2>
-        <ul id="listaComentarios"></ul>
-    </section>
+            <div class="button-group">
+                <button type="submit" class="btn-login">Entrar</button>
+                <button type="button" class="btn-forgot">Esqueci a senha</button>
+            </div>
+        </form>
+    </div>
 </main>
 
-<script src="../script.js"></script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const nomeUsuario = document.getElementById('username').value.trim();
+        const senha = document.getElementById('password').value.trim();
+        const erroUsuario = document.getElementById('erroUsuario');
+        const erroSenha = document.getElementById('erroSenha');
+
+        // Limpa mensagens anteriores
+        erroUsuario.style.display = 'none';
+        erroSenha.style.display = 'none';
+
+        let temErro = false;
+
+        // Validação do nome de usuário
+        if (!nomeUsuario) {
+            erroUsuario.textContent = 'O campo usuário é obrigatório.';
+            erroUsuario.style.display = 'block';
+            temErro = true;
+        } else if (nomeUsuario.length < 3) {
+            erroUsuario.textContent = 'O usuário deve ter pelo menos 3 caracteres.';
+            erroUsuario.style.display = 'block';
+            temErro = true;
+        }
+
+        // Validação da senha
+        if (!senha) {
+            erroSenha.textContent = 'O campo senha é obrigatório.';
+            erroSenha.style.display = 'block';
+            temErro = true;
+        } else if (senha.length < 6) {
+            erroSenha.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+            erroSenha.style.display = 'block';
+            temErro = true;
+        } else if (!/[A-Za-z]/.test(senha) || !/\d/.test(senha)) {
+            erroSenha.textContent = 'A senha deve conter letras e números.';
+            erroSenha.style.display = 'block';
+            temErro = true;
+        }
+
+        if (temErro) return;
+
+        try {
+            const response = await fetch('http://localhost:8080/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nomeUsuario, senha })
+            });
+
+            if (!response.ok) {
+                throw new Error('Usuário ou senha inválidos');
+            }
+
+            const data = await response.json();
+            localStorage.setItem('token', data.token);
+            alert('Login realizado com sucesso!');
+            window.location.href = '/home';
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // Esconde mensagem ao começar a digitar novamente (opcional, mas melhora a UX)
+    document.getElementById('username').addEventListener('input', () => {
+        document.getElementById('erroUsuario').style.display = 'none';
+    });
+
+    document.getElementById('password').addEventListener('input', () => {
+        document.getElementById('erroSenha').style.display = 'none';
+    });
+</script>
+
 </body>
 </html>

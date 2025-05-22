@@ -1,4 +1,4 @@
 package com.residencia.apivalidacaocomentarios.dto.response;
 
-public record UsuarioResponseDTO (Long id, String nomeUsuario) {
+public record UsuarioResponseDTO (Long id, String nomeUsuario, String role) {
 }

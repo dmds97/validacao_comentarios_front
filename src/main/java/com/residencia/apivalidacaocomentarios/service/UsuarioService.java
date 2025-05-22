@@ -4,16 +4,21 @@ import com.residencia.apivalidacaocomentarios.dto.response.UsuarioResponseDTO;
 import com.residencia.apivalidacaocomentarios.exception.UsuarioNotFoundException;
 import com.residencia.apivalidacaocomentarios.model.Usuario;
 import com.residencia.apivalidacaocomentarios.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+
+
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
@@ -57,6 +62,20 @@ public class UsuarioService {
     }
 
     private UsuarioResponseDTO toResponseDTO(Usuario usuario) {
-        return new UsuarioResponseDTO(usuario.getId(), usuario.getNomeUsuario());
+        return new UsuarioResponseDTO(usuario.getId(), usuario.getNomeUsuario(), usuario.getRole());
+    }
+
+    public Optional<Usuario> validateUser(String nomeUsuario, String senha) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByNomeUsuario(nomeUsuario);
+
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+
+//            if (passwordEncoder.matches(senha, usuario.getSenha())) {
+//                return Optional.of(usuario); // Login válido
+//            }
+        }
+
+        return Optional.empty(); // Usuário não encontrado ou senha inválida
     }
 }
