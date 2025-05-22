@@ -1,0 +1,72 @@
+/* Estilos Globais */
+:root {
+  --cor-primaria: #3f51b5;
+  --cor-secundaria: #ff4081;
+  --cor-texto: #333;
+  --cor-fundo: #f5f5f5;
+  --cor-borda: #ddd;
+  --sombra: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  color: var(--cor-texto);
+  background-color: var(--cor-fundo);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Cabeçalho */
+header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+h1 {
+  color: var(--cor-primaria);
+  margin-bottom: 10px;
+}
+
+/* Formulário */
+app-comentario-form {
+  display: block;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: var(--sombra);
+  margin-bottom: 30px;
+}
+
+/* Lista de Comentários */
+app-comentario-list {
+  display: block;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: var(--sombra);
+}
+
+/* Rodapé */
+footer {
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px 0;
+  color: #666;
+  font-size: 0.9em;
+  border-top: 1px solid var(--cor-borda);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  header, footer {
+    padding: 15px 0;
+  }
+}

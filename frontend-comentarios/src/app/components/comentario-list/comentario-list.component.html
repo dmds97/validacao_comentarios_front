@@ -1,0 +1,10 @@
+<div *ngIf="comentarios.length === 0">
+  <p>Nenhum comentário encontrado.</p>
+</div>
+
+<ul *ngIf="comentarios.length > 0">
+  <li *ngFor="let comentario of comentarios">
+    <strong>{{ comentario.texto }}</strong><br />
+    <small>{{ comentario.criadoEm | date: 'short' }}</small>
+  </li>
+</ul>

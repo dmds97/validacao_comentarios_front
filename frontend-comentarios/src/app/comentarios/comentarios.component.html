@@ -1,0 +1,29 @@
+<div class="comentarios">
+  <h2>Comentários</h2>
+
+  <!-- Lista de Comentários -->
+  <div *ngFor="let comentario of comentarios" class="comentario">
+    <p><strong>{{ comentario.autor }}</strong> disse:</p>
+    <p>{{ comentario.texto }}</p>
+    <small>{{ comentario.data | date:'short' }}</small>
+    <hr />
+  </div>
+
+  <!-- Formulário para novo comentário -->
+  <form (ngSubmit)="adicionarComentario()">
+    <input
+      type="text"
+      [(ngModel)]="novoComentario.autor"
+      name="autor"
+      placeholder="Seu nome"
+      required
+    />
+    <textarea
+      [(ngModel)]="novoComentario.texto"
+      name="texto"
+      placeholder="Digite um comentário..."
+      required
+    ></textarea>
+    <button type="submit">Comentar</button>
+  </form>
+</div>
